@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #1a1a1a;
+      overflow: hidden;
+    }
+
+    .stage {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #2a1b3d, #1a1a1a);
+    }
+
+    .memory-box {
+      position: relative;
+      width: 280px;
+      height: 380px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .memory-box-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.8s;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .memory-box:hover .memory-box-inner {
+      transform: rotateY(180deg);
+    }
+
+    .memory-front, .memory-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 30px rgba(255, 20, 147, 0.3);
+    }
+
+    .memory-back {
+      transform: rotateY(180deg);
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .heart-icon {
+      font-size: 48px;
+      color: #ff1493;
+      animation: pulse 1.5s infinite;
+    }
+
+    .photo-gallery {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: none;
+      perspective: 1000px;
+    }
+
+    .photo-frame {
+      position: absolute;
+      width: 200px;
+      height: 300px;
+      transform-style: preserve-3d;
+      transition: all 1s;
+    }
+
+    .photo {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      backface-visibility: hidden;
+      background: white;
+      padding: 10px;
+      box-shadow: 0 0 20px rgba(255, 20, 147, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .rose-reveal {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .magical-rose {
+      width: 300px;
+      height: 400px;
+      position: relative;
+    }
+
+    .rose-petals {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .petal {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #ff1493, #ff69b4);
+      border-radius: 50% 50% 0 50%;
+      transform-origin: 0% 100%;
+      opacity: 0;
+    }
+
+    .message {
+      color: white;
+      text-align: center;
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s;
+    }
+
+    .instruction {
+      position: absolute;
+      bottom: 30px;
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      width: 100%;
+      animation: fadeInOut 2s infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes petalUnfold {
+      0% { transform: rotate(var(--rotate)) scale(0); opacity: 0; }
+      100% { transform: rotate(var(--rotate)) scale(1); opacity: 1; }
+    }
+
+    @keyframes photoFloat {
+      0% { transform: translate(var(--tx), var(--ty)) rotate(var(--rotate)) scale(0); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rotate)) scale(1); opacity: 0; }
+    }
+
+    .memory-text {
+      font-size: 24px;
+      color: white;
+      text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .click-me {
+      font-size: 16px;
+      color: #ff69b4;
+      margin-top: 15px;
+      animation: pulse 1.5s infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="memory-box" onclick="startJourney()">
+      <div class="memory-box-inner">
+        <div class="memory-front">
+          <div class="heart-icon">❤️</div>
+          <div class="memory-text">hehehe </div>
+          <div class="click-me">Click to Begin</div>
+        </div>
+        <div class="memory-back">
+          <h3>To My Love</h3>
+          <p>Every moment with you is precious...</p>
+          <div class="heart-icon">💝</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="photo-gallery"></div>
+
+    <div class="rose-reveal">
+      <div class="magical-rose">
+        <div class="rose-petals"></div>
+      </div>
+      <div class="message">
+        <h2>Happy Rose Day, My Love! ❤️</h2>
+        <p>Distance means so little when someone means so much.</p>
+        <p>Forever yours.</p>
+      </div>
+    </div>
+
+    <div class="instruction">Hover over the card to see a message ✨</div>
+  </div>
+
+  <script>
+    // Replace these URLs with actual photo URLs
+    const photos = [
+  'https://i.ibb.co/23yRsgVy/IMG-20250207-WA0001.jpg',
+  'https://i.ibb.co/4RwcCfpz/IMG-20250207-WA0002.jpg',
+  'https://i.ibb.co/LzMY293X/IMG-20250207-WA0003.jpg',
+  'https://i.ibb.co/b5RtFfy7/IMG-20250207-WA0000.jpg'
+];
+    function startJourney() {
+      const memoryBox = document.querySelector('.memory-box');
+      const photoGallery = document.querySelector('.photo-gallery');
+      const instruction = document.querySelector('.instruction');
+
+      memoryBox.style.display = 'none';
+      photoGallery.style.display = 'block';
+      instruction.textContent = 'Watch our memories unfold...';
+
+      showPhotoMemories();
+    }
+
+    function showPhotoMemories() {
+      const photoGallery = document.querySelector('.photo-gallery');
+      
+      photos.forEach((photo, index) => {
+        setTimeout(() => {
+          const frame = document.createElement('div');
+          frame.className = 'photo-frame';
+          
+          const img = document.createElement('img');
+          img.src = photo;
+          img.className = 'photo';
+          img.alt = 'Our Memory';
+          
+          frame.appendChild(img);
+          photoGallery.appendChild(frame);
+
+          // Random position and rotation for each photo
+          const angle = (Math.random() * 360);
+          const distance = 150 + Math.random() * 100;
+          const tx = Math.cos(angle * Math.PI / 180) * distance;
+          const ty = Math.sin(angle * Math.PI / 180) * distance;
+          
+          frame.style.setProperty('--tx', `${tx}px`);
+          frame.style.setProperty('--ty', `${ty}px`);
+          frame.style.setProperty('--rotate', `${-30 + Math.random() * 60}deg`);
+          frame.style.animation = `photoFloat 1.7s ease-in-out ${index * 1.10}s`;
+        }, index * 500);
+      });
+
+      // After photos animation, show rose
+      setTimeout(showRoseReveal, (photos.length + 2) * 500);
+    }
+
+    function showRoseReveal() {
+      const photoGallery = document.querySelector('.photo-gallery');
+      const roseReveal = document.querySelector('.rose-reveal');
+      const instruction = document.querySelector('.instruction');
+      
+      photoGallery.style.display = 'none';
+      roseReveal.style.display = 'flex';
+      instruction.style.display = 'none';
+
+      // Create rose petals
+      const rosePetals = document.querySelector('.rose-petals');
+      for (let i = 0; i < 24; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+        petal.style.setProperty('--rotate', `${i * 15}deg`);
+        petal.style.animation = `petalUnfold 1s ease-out ${i * 0.27}s forwards`;
+        rosePetals.appendChild(petal);
+      }
+
+      // Show message
+      setTimeout(() => {
+        const message = document.querySelector('.message');
+        message.style.opacity = '1';
+        message.style.transform = 'translateY(0)';
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
